@@ -2,14 +2,23 @@
     (:require
       [reagent.core :as r]))
 
-;; -------------------------
-;; Views
+(defn intro []
+  [:div.intro
+    "Drag and drop MIDI file"])
 
 (defn home-page []
-  [:div [:h2 "Welcome to Reagent"]])
+  [:div
+    [intro]])
 
-;; -------------------------
-;; Initialize app
+(defn convert-midi [midi-file]
+  (.getMidiEvents midi-file))
+
+(->
+  (.fetch js/window "demo.mid")
+  (.then #(.arrayBuffer %))
+  (.then #(js/MIDIFile. %))
+  (.then #(convert-midi %))
+  (.then #(.log js/console %)))
 
 (defn mount-root []
   (r/render [home-page] (.getElementById js/document "app")))
